@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Time Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px auto;
+            max-width: 600px;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-size: 16px;
+        }
+        .stats-box {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #555;
+            background: #f1f3f5;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+        .highlight {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Reading Time Calculator</h2>
+    <p>Type or paste your text below to instantly estimate reading time.</p>
+    
+    <textarea id="textInput" placeholder="Start typing here..."></textarea>
+    
+    <div class="stats-box">
+        <div>Words: <span id="wordCount" class="highlight">0</span></div>
+        <div>Estimated Reading Time: <span id="readingTime" class="highlight">0 min</span></div>
+    </div>
+</div>
+
+<script>
+    const textInput = document.getElementById('textInput');
+    const wordCountElement = document.getElementById('wordCount');
+    const readingTimeElement = document.getElementById('readingTime');
+
+    // Average adult reading speed (Words Per Minute)
+    const WORDS_PER_MINUTE = 200; 
+
+    textInput.addEventListener('input', () => {
+        const text = textInput.value.trim();
+        
+        // Count words by splitting by spaces, regex handles multiple spaces/newlines
+        const words = text === "" ? [] : text.split(/\s+/);
+        const totalWords = words.length;
+
+        // Calculate reading time in minutes
+        const rawMinutes = totalWords / WORDS_PER_MINUTE;
+        
+        let readingTimeStr = "0 min";
+        
+        if (totalWords > 0) {
+            if (rawMinutes < 1) {
+                // If it takes less than a minute, show it in seconds
+                const seconds = Math.max(1, Math.round(rawMinutes * 60));
+                readingTimeStr = `${seconds} sec`;
+            } else {
+                // Round up to the nearest full minute for longer texts
+                const minutes = Math.ceil(rawMinutes);
+                readingTimeStr = `${minutes} min`;
+            }
+        }
+
+        // Update the UI
+        wordCountElement.textContent = totalWords;
+        readingTimeElement.textContent = readingTimeStr;
+    });
+</script>
+
+</body>
+</html>
